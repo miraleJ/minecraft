@@ -3,18 +3,14 @@ const page = document.querySelector('.page');
 let worldMat = [];
 let world;
 let bar;
+let inventory;
 let toolInUse = null;
+let tileInUse = null;
+
 class TileObj {
     constructor(tileName, canPickup) {
         this.tileName = tileName;
         this.canPickup = canPickup;
-    }
-
-    clickOnTile (nowTool) {
-        if (nowTool.canWorkOn.contains(this.tileName)) {
-            // add this tile to the inventory //TODO
-            // change this tile to sky tile //TODO           
-        }
     }
 }
 
@@ -76,6 +72,140 @@ function addObjInMat(objName, x, y) {
     console.log(worldMat);
 }
 
+function isNearSky(divI, divJ) {
+    
+    // if the tile is near the sky or cloud
+    if (worldMat[divI][divJ - 1] === 0 ||
+        worldMat[divI][divJ - 1] === 6 ||
+        worldMat[divI][divJ + 1] === 0 ||
+        worldMat[divI][divJ + 1] === 6 ||
+        worldMat[divI - 1][divJ] === 0 ||
+        worldMat[divI - 1][divJ] === 6 ||
+        worldMat[divI + 1][divJ] === 0 ||
+        worldMat[divI + 1][divJ] === 6) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function updateTile(divI, divJ, targetedDiv, targetedClass) {
+    let classNum;
+    switch (targetedClass) { //TODO - hard coded
+        case 'grass-tile':
+            classNum = 0;
+            break;
+        case 'soil-tile':
+            classNum = 1;
+            break;
+        case 'stone-tile':
+            classNum = 2;
+            break;
+        case 'wood-tile':
+            classNum = 3;
+            break;
+        case 'leaf-tile':
+            classNum = 4;
+            break;
+    
+        default:
+            break;
+    }
+    // add tile to inventory 
+    inventory.children[classNum].replaceChild(document.createTextNode(`${parseInt(inventory.children[classNum].innerText) + 1}`), inventory.children[classNum].firstChild);
+    // remove tile from world mat
+    worldMat[divI][divJ] = 0;
+    console.log('------------', worldMat);
+    // update the div in the world
+    targetedDiv.classList.remove(targetedClass);
+    targetedDiv.classList.add('sky-tile');
+}
+
+function worldListenerHandler() {
+    if (toolInUse) {
+        let targetedDiv = event.target;
+        let targetedClass = targetedDiv.className;
+
+        let classNum;
+        switch (targetedClass) { //TODO - hard coded
+            case 'sky-tile':
+                classNum = 0;
+                break;
+            case 'grass-tile':
+                classNum = 1;
+                break;
+            case 'soil-tile':
+                classNum = 2;
+                break;
+            case 'stone-tile':
+                classNum = 3;
+                break;
+            case 'wood-tile':
+                classNum = 4;
+                break;
+            case 'leaf-tile':
+                classNum = 5;
+                break;
+            case 'cloud-tile':
+                classNum = 6;
+                break;
+        
+            default:
+                classNum = -1;
+                break;
+        }
+
+        console.log('>>>',targetedClass);
+        console.log('>>>',toolInUse.canWorkOn);
+        console.log('>>>',tilesTypes.get(classNum).tileName);
+        if (classNum >= 0 && toolInUse.canWorkOn.includes(tilesTypes.get(classNum).tileName)) {
+            console.log('>>>>>>>>>>>>5');
+            let id = targetedDiv.id;
+            let temp = id.split('-');
+            let divI = parseInt(temp[1]);
+            let divJ = parseInt(temp[2]);
+            // if the tile is in a place that can be taken
+            if (isNearSky(divI, divJ)) {
+                updateTile(divI, divJ, targetedDiv, targetedClass);
+            }
+        } else {
+            // sign the tool that cann't be used //TODO
+        }
+    } else if (tileInUse) {
+        targetedDiv = event.target;
+
+        // if the tile can be put in this place
+        if (!targetedDiv.canPickup) {
+            // place the tile in world //TODO
+            
+            // decrease the tile from the inventory //TODO
+        } else {
+            // sign the tile that cann't be used //TODO
+        }
+    }
+}
+
+function toolsListenerHandler() { //TODO
+    let targetedDiv = event.target;
+    let targetedtext = targetedDiv.parentElement.innerText;
+
+    // save the in use tool
+    if (Array.from(toolsTypes.values()).map(t => t.toolName).includes(targetedtext)) {
+        if (targetedtext === 'axe') { //TODO hardcoded
+            toolInUse = toolsTypes.get(0);
+            tileInUse = null;
+        } else if (targetedtext === 'pickaxe') {
+            toolInUse = toolsTypes.get(1);
+            tileInUse = null;
+        } else if (targetedtext === 'shovel') {
+            toolInUse = toolsTypes.get(2);
+            tileInUse = null;
+        }
+    }
+    console.log(toolInUse);
+    // mark it in the toolbox //TODO
+}
+
 function createWorld(numBlocksInWidth = 25) {
     // create matrix
     for (let row = 0; row < 25; row++) {
@@ -92,7 +222,7 @@ function createWorld(numBlocksInWidth = 25) {
         }
     }
     
-    // add objects //TODO
+    // add objects 
     addObjInMat('cloud', 2, 3);
     addObjInMat('rock', 10, 1);
     addObjInMat('rock', 10, 11);
@@ -101,15 +231,19 @@ function createWorld(numBlocksInWidth = 25) {
     // create the world divs
     let worldDivs = document.createElement('div');
     worldDivs.classList.add('world-divs-warpper');
-    worldMat.map(row => {row.map(tileNum => {
+    worldMat.map((row, i) => {row.map((tileNum, j) => {
         let tile = document.createElement('div');
         tile.classList.add(tilesTypes.get(tileNum).tileName);
+        tile.setAttribute("id", `div-${i}-${j}`);
         worldDivs.appendChild(tile);
     })});
     // upload
     world.appendChild(worldDivs);
+    console.log(world); //TODO
 }
+
 function createToolbox() {
+    console.log('>>>>>>>>>>>>>>>>>>>>>>1')
     let toolbox = document.createElement('div');
     toolbox.classList.add('tool-box');
 
@@ -127,7 +261,7 @@ function createToolbox() {
 }
 
 function createInventory() {
-    let inventory = document.createElement('div');
+    inventory = document.createElement('div');
     inventory.classList.add('inventory');
 
     tilesTypes.forEach(tile => {
@@ -149,6 +283,7 @@ function createInventory() {
 }
 
 function createSideBar() {
+    console.log('>>>>>>>>>>>2')
     let toolbox = createToolbox();
     let inventory = createInventory();
     let resetBtn = document.createElement('button'); //TODO?
@@ -172,7 +307,22 @@ function startGame() {
     world = document.querySelector('.world');
     bar = document.querySelector('.bar');
     createWorld();
+    console.log('>>>>>>>>>>>>3')
     createSideBar();
+    // create event listeners //TODO
+    createListeners();
+}
+
+function createListeners() {
+    // create world listener
+    world.addEventListener('click', worldListenerHandler); //TODO
+    // create tools listener
+    bar.children[0].addEventListener('click', toolsListenerHandler); //TODO
+    console.log('>>>>>>>>>>4')
+    // create inventory listeners
+    //bar.children[1].addEventListener('click', inventoryListenerHandler); //TODO
+    // create button listeners
+    //bar.children[2].addEventListener('click', btnListenerHandler); //TODO
 }
 
 document.querySelector('.start-btn').addEventListener('click', startGame);
