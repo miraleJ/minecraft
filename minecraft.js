@@ -3,6 +3,7 @@ const page = document.querySelector('.page');
 let worldMat = [];
 let world;
 let bar;
+let toolInUse = null;
 class TileObj {
     constructor(tileName, canPickup) {
         this.tileName = tileName;
@@ -60,17 +61,19 @@ gameObjects.set('rock', new GameObj('rock',
     [0, 3, 3, 3, 0],
     [3, 3, 3, 3, 3],]));
 gameObjects.set('cloud', new GameObj('cloud',
-    [[0, 0, 0, 6, 0, 0, 0, 0],
-    [0, 6, 6, 6, 6, 0, 6, 6],
+    [[0, 0, 6, 6, 6, 0, 0, 0],
+    [6, 6, 6, 6, 6, 6, 6, 6],
     [0, 0, 0, 0, 6, 6, 0, 0]]));
 
 function addObjInMat(objName, x, y) {
-    for (let i = x; i < x + gameObjects.get(objName).matrix[0].length; i++) {
-        for (let j = y; j < y + gameObjects.get(objName).matrix.length; j++) {
-            worldMat[i][j] = 6;
+    let objToInsert = gameObjects.get(objName);
+    
+    for (let i = 0; i < objToInsert.matrix.length; i++) {
+        for (let j = 0; j < objToInsert.matrix[0].length; j++) {
+            worldMat[i + x][j + y] = objToInsert.matrix[i][j];
         }
-        
     }
+    console.log(worldMat);
 }
 
 function createWorld(numBlocksInWidth = 25) {
@@ -88,11 +91,12 @@ function createWorld(numBlocksInWidth = 25) {
             }
         }
     }
-    // // add objects //TODO
-    // addObjInMat('cloud',5, 5);
-    // addObjInMat('rock',9, 1);
-    // addObjInMat('rock',9, 11);
-    // addObjInMat('tree',5, 19);
+    
+    // add objects //TODO
+    addObjInMat('cloud', 2, 3);
+    addObjInMat('rock', 10, 1);
+    addObjInMat('rock', 10, 11);
+    addObjInMat('tree',5, 19);
 
     // create the world divs
     let worldDivs = document.createElement('div');
