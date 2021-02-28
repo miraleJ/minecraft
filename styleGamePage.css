@@ -1,0 +1,57 @@
+:root {
+  --text-color: white;
+  --sky-color: rgb(87, 191, 233);
+  --clouds-color: white;
+  --text-background: black;
+}
+
+.game-page {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  gap: 0px;
+  grid-template-columns: 4fr 1fr;
+}
+
+.bar {
+  background-color: var(--text-background);
+}
+
+.world {
+  background-color: var(--sky-color);
+}
+
+.world-divs-warpper {
+  height: 100vh;
+  display: grid;
+  gap: 0px;
+  grid-template-columns: repeat(25, 1fr);
+  grid-template-rows: repeat(20, 1fr);
+}
+
+.grass-tile {
+  background-image: url(/imgs/grass.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.soil-tile {
+  background-image: url(/imgs/soil.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.stone-tile {
+  background-image: url(/imgs/rock.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.wood-tile {
+  background-image: url(/imgs/wood.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.leaf-tile {
+  background-image: url(/imgs/tree-leaves.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
