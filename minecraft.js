@@ -89,7 +89,7 @@ function isNearSky(divI, divJ) {
     }
 }
 
-function updateTile(divI, divJ, targetedDiv, targetedClass) {
+function updateTakenTile(divI, divJ, targetedDiv, targetedClass) {
     let classNum;
     switch (targetedClass) { //TODO - hard coded
         case 'grass-tile':
@@ -119,6 +119,41 @@ function updateTile(divI, divJ, targetedDiv, targetedClass) {
     // update the div in the world
     targetedDiv.classList.remove(targetedClass);
     targetedDiv.classList.add('sky-tile');
+}
+
+function updatePlacedTile(divI, divJ, targetedDiv) {
+    let classNum;
+    switch (tileInUse.tileName) { //TODO - hard coded
+        case 'grass-tile':
+            classNum = 0;
+            break;
+        case 'soil-tile':
+            classNum = 1;
+            break;
+        case 'stone-tile':
+            classNum = 2;
+            break;
+        case 'wood-tile':
+            classNum = 3;
+            break;
+        case 'leaf-tile':
+            classNum = 4;
+            break;
+    
+        default:
+            break;
+    }
+    // remove tile from inventory 
+    let numInInv = parseInt(inventory.children[classNum].innerText);
+    if (numInInv > 0) {
+        inventory.children[classNum].replaceChild(document.createTextNode(`${numInInv - 1}`), inventory.children[classNum].firstChild);
+        // add tile to world mat
+        worldMat[divI][divJ] = classNum + 1;
+        console.log('------------', worldMat);
+        // update the div in the world
+        targetedDiv.classList.remove(targetedDiv.className);
+        targetedDiv.classList.add(tileInUse.tileName);
+    }
 }
 
 function worldListenerHandler() {
@@ -155,18 +190,14 @@ function worldListenerHandler() {
                 break;
         }
 
-        console.log('>>>',targetedClass);
-        console.log('>>>',toolInUse.canWorkOn);
-        console.log('>>>',tilesTypes.get(classNum).tileName);
         if (classNum >= 0 && toolInUse.canWorkOn.includes(tilesTypes.get(classNum).tileName)) {
-            console.log('>>>>>>>>>>>>5');
             let id = targetedDiv.id;
             let temp = id.split('-');
             let divI = parseInt(temp[1]);
             let divJ = parseInt(temp[2]);
             // if the tile is in a place that can be taken
             if (isNearSky(divI, divJ)) {
-                updateTile(divI, divJ, targetedDiv, targetedClass);
+                updateTakenTile(divI, divJ, targetedDiv, targetedClass);
             }
         } else {
             // sign the tool that cann't be used //TODO
@@ -176,16 +207,20 @@ function worldListenerHandler() {
 
         // if the tile can be put in this place
         if (!targetedDiv.canPickup) {
-            // place the tile in world //TODO
-            
-            // decrease the tile from the inventory //TODO
+            console.log('[[[[[[')
+            // place the tile in world and update the inventory
+            let id = targetedDiv.id;
+            let temp = id.split('-');
+            let divI = parseInt(temp[1]);
+            let divJ = parseInt(temp[2]);
+            updatePlacedTile(divI, divJ, targetedDiv);
         } else {
             // sign the tile that cann't be used //TODO
         }
     }
 }
 
-function toolsListenerHandler() { //TODO
+function toolsListenerHandler() {
     let targetedDiv = event.target;
     let targetedtext = targetedDiv.parentElement.innerText;
 
@@ -203,6 +238,48 @@ function toolsListenerHandler() { //TODO
         }
     }
     console.log(toolInUse);
+    // mark it in the toolbox //TODO
+}
+
+function inventoryListenerHandler() {
+    let targetedDiv = event.target;
+    let targetedtext = targetedDiv.parentElement.innerText;
+
+    if (targetedtext != 'sky-tile' && targetedtext != 'cloud-tile') {
+        // save the in used tile
+        // console.log(Array.from(tilesTypes.values()).map(t => t.tileName),targetedtext,'<<<<<<<<<<<<<<<<');
+        // if (Array.from(tilesTypes.values()).map(t => t.tileName).includes(targetedtext)) {
+            console.log('[[[[[[[[[[');
+            switch (targetedtext) { //TODO - hard coded
+                case '1':
+                    tileInUse = tilesTypes.get(1);
+                    toolInUse = null;
+                    console.log(tileInUse);
+                    break;
+                case '2':
+                    tileInUse = tilesTypes.get(2);
+                    toolInUse = null;
+                    break;
+                case '3':
+                    tileInUse = tilesTypes.get(3);
+                    toolInUse = null;
+                    break;
+                case '4':
+                    tileInUse = tilesTypes.get(4);
+                    toolInUse = null;
+                    break;
+                case '5':
+                    tileInUse = tilesTypes.get(5);
+                    toolInUse = null;
+                    break;
+            
+                default:
+                    break;
+            }
+            console.log(tileInUse)
+        // }
+    }
+    
     // mark it in the toolbox //TODO
 }
 
@@ -320,7 +397,7 @@ function createListeners() {
     bar.children[0].addEventListener('click', toolsListenerHandler); //TODO
     console.log('>>>>>>>>>>4')
     // create inventory listeners
-    //bar.children[1].addEventListener('click', inventoryListenerHandler); //TODO
+    bar.children[1].addEventListener('click', inventoryListenerHandler); //TODO
     // create button listeners
     //bar.children[2].addEventListener('click', btnListenerHandler); //TODO
 }
