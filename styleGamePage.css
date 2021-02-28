@@ -3,6 +3,7 @@
   --sky-color: rgb(87, 191, 233);
   --clouds-color: white;
   --text-background: black;
+  --border: gray;
 }
 
 .game-page {
@@ -54,4 +55,54 @@
   background-image: url(/imgs/tree-leaves.png);
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.tool-box {
+  padding: 2vh;
+  display: grid;
+  gap: 2 vh;
+  grid-template-columns: 1fr 1fr;
+}
+
+.tool {
+  margin-top: 2vh;
+}
+
+.tool-img {
+  height: 10vh;
+  width: 10vh;
+  border: solid 1.5px var(--border);
+}
+
+.axe > .tool-img {
+  background-image: url(/imgs/wood_axe.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.pickaxe > .tool-img {
+  background-image: url(/imgs/stone_pickaxe.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.shovel > .tool-img {
+  background-image: url(/imgs/stone_shovel.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.inventory {
+  padding: 2vh;
+  display: grid;
+  gap: 2 vh;
+  grid-template-columns: 1fr 1fr;
+}
+
+.tile {
+  margin-top: 2vh;
+}
+
+.tile-img {
+  height: 10vh;
+  width: 10vh;
+  border: solid 1.5px var(--border);
 }
