@@ -24,6 +24,13 @@ class Tool {
     }
 }
 
+class GameObj {
+    constructor(objName, matrix) {
+        this.objName = objName;
+        this.matrix = matrix;
+    }
+}
+
 let tilesTypes = new Map();
 tilesTypes.set(0, new TileObj('sky-tile', false));
 tilesTypes.set(1, new TileObj('grass-tile', true));
@@ -31,11 +38,40 @@ tilesTypes.set(2, new TileObj('soil-tile', true));
 tilesTypes.set(3, new TileObj('stone-tile', true));
 tilesTypes.set(4, new TileObj('wood-tile', true));
 tilesTypes.set(5, new TileObj('leaf-tile', true));
+tilesTypes.set(6, new TileObj('cloud-tile', false));
 
 let toolsTypes = new Map();
 toolsTypes.set(0, new Tool('axe', ['wood-tile', 'leaf-tile']));
 toolsTypes.set(1, new Tool('pickaxe', ['stone-tile']));
 toolsTypes.set(2, new Tool('shovel', ['grass-tile', 'soil-tile']));
+
+let gameObjects = new Map();
+gameObjects.set('tree', new GameObj('tree',
+    [[5, 5, 5, 5, 5],
+    [5, 5, 5, 5, 5],
+    [5, 5, 5, 5, 5],
+    [5, 5, 5, 5, 5],
+    [5, 5, 5, 5, 5],
+    [0, 0, 4, 0, 0],
+    [0, 0, 4, 0, 0],
+    [0, 0, 4, 0, 0]]));
+gameObjects.set('rock', new GameObj('rock',
+    [[0, 0, 3, 3, 0],
+    [0, 3, 3, 3, 0],
+    [3, 3, 3, 3, 3],]));
+gameObjects.set('cloud', new GameObj('cloud',
+    [[0, 0, 0, 6, 0, 0, 0, 0],
+    [0, 6, 6, 6, 6, 0, 6, 6],
+    [0, 0, 0, 0, 6, 6, 0, 0]]));
+
+function addObjInMat(objName, x, y) {
+    for (let i = x; i < x + gameObjects.get(objName).matrix[0].length; i++) {
+        for (let j = y; j < y + gameObjects.get(objName).matrix.length; j++) {
+            worldMat[i][j] = 6;
+        }
+        
+    }
+}
 
 function createWorld(numBlocksInWidth = 25) {
     // create matrix
@@ -52,7 +88,12 @@ function createWorld(numBlocksInWidth = 25) {
             }
         }
     }
-    // add objects //TODO
+    // // add objects //TODO
+    // addObjInMat('cloud',5, 5);
+    // addObjInMat('rock',9, 1);
+    // addObjInMat('rock',9, 11);
+    // addObjInMat('tree',5, 19);
+
     // create the world divs
     let worldDivs = document.createElement('div');
     worldDivs.classList.add('world-divs-warpper');
@@ -106,18 +147,18 @@ function createInventory() {
 function createSideBar() {
     let toolbox = createToolbox();
     let inventory = createInventory();
-    let resetBtn = document.createElement('button');
+    let resetBtn = document.createElement('button'); //TODO?
     resetBtn.classList.add('in-game-btn');
     resetBtn.innerText = 'Reset';
 
     bar.appendChild(toolbox);
     bar.appendChild(inventory);
-    bar.appendChild(resetBtn);//TODO
+    bar.appendChild(resetBtn);
 }
 
 function startGame() {
     console.log('start');
-    // delete text
+    // delete text and create the 2 main divs
     page.innerHTML = 
      `<div class="game-page">
         <div class="world"></div>

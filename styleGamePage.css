@@ -56,6 +56,9 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+.cloud-tile {
+  background-color: var(--clouds-color);
+}
 
 .tool-box {
   padding: 2vh;
