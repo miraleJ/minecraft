@@ -149,7 +149,6 @@ function updatePlacedTile(divI, divJ, targetedDiv) {
         inventory.children[classNum].replaceChild(document.createTextNode(`${numInInv - 1}`), inventory.children[classNum].firstChild);
         // add tile to world mat
         worldMat[divI][divJ] = classNum + 1;
-        console.log('------------', worldMat);
         // update the div in the world
         targetedDiv.classList.remove(targetedDiv.className);
         targetedDiv.classList.add(tileInUse.tileName);
@@ -237,7 +236,6 @@ function toolsListenerHandler() {
             tileInUse = null;
         }
     }
-    console.log(toolInUse);
     // mark it in the toolbox //TODO
 }
 
@@ -249,7 +247,6 @@ function inventoryListenerHandler() {
         // save the in used tile
         // console.log(Array.from(tilesTypes.values()).map(t => t.tileName),targetedtext,'<<<<<<<<<<<<<<<<');
         // if (Array.from(tilesTypes.values()).map(t => t.tileName).includes(targetedtext)) {
-            console.log('[[[[[[[[[[');
             switch (targetedtext) { //TODO - hard coded
                 case '1':
                     tileInUse = tilesTypes.get(1);
@@ -316,7 +313,6 @@ function createWorld(numBlocksInWidth = 25) {
     })});
     // upload
     world.appendChild(worldDivs);
-    console.log(world); //TODO
 }
 
 function createToolbox() {
@@ -363,7 +359,7 @@ function createSideBar() {
     console.log('>>>>>>>>>>>2')
     let toolbox = createToolbox();
     let inventory = createInventory();
-    let resetBtn = document.createElement('button'); //TODO?
+    let resetBtn = document.createElement('button');
     resetBtn.classList.add('in-game-btn');
     resetBtn.innerText = 'Reset';
 
@@ -386,20 +382,20 @@ function startGame() {
     createWorld();
     console.log('>>>>>>>>>>>>3')
     createSideBar();
-    // create event listeners //TODO
+    // create event listeners
     createListeners();
 }
 
 function createListeners() {
     // create world listener
-    world.addEventListener('click', worldListenerHandler); //TODO
+    world.addEventListener('click', worldListenerHandler);
     // create tools listener
-    bar.children[0].addEventListener('click', toolsListenerHandler); //TODO
+    bar.children[0].addEventListener('click', toolsListenerHandler);
     console.log('>>>>>>>>>>4')
     // create inventory listeners
-    bar.children[1].addEventListener('click', inventoryListenerHandler); //TODO
+    bar.children[1].addEventListener('click', inventoryListenerHandler);
     // create button listeners
-    //bar.children[2].addEventListener('click', btnListenerHandler); //TODO
+    bar.children[2].addEventListener('click', () => location.reload()); //TODO
 }
 
 document.querySelector('.start-btn').addEventListener('click', startGame);
