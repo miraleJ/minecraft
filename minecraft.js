@@ -203,7 +203,8 @@ function worldListenerHandler() {
         targetedDiv = event.target;
 
         // if the tile can be put in this place
-        if (!targetedDiv.canPickup) {
+        if (targetedDiv.classList[0] === 'sky-tile' ||
+        targetedDiv.classList[0] === 'cloud-tile') {
             console.log('?????')
             // place the tile in world and update the inventory
             let id = targetedDiv.id;
@@ -243,7 +244,6 @@ function inventoryListenerHandler() {
 
     if (targetedTile != 'sky-tile' && targetedTile != 'cloud-tile') {
         // save the in used tile
-        console.log('?????', targetedTile)
         switch (targetedTile) { //TODO - hard coded
             case 'grass-tile':
                 tileInUse = tilesTypes.get(1);
@@ -269,7 +269,6 @@ function inventoryListenerHandler() {
             default:
                 break;
         }
-        console.log(tileInUse, '?????');
     }
     
     // mark it in the toolbox //TODO
